@@ -4,10 +4,10 @@ timer = gets.chomp.to_i
 
 now = Time.now
 timerCount = timer * 60 # multiplied by 60 sec/min
-quarterTime = now + (timerCount/4)
-halfTime = now + (timerCount/2)
+divisions = 40
+divPerSec = timerCount / divisions
 endTime = now + timerCount
-
+counter = 0
 def spinner()
  while true # this while true statement never gets switched off in the loop below
   print("/")
@@ -19,19 +19,15 @@ def spinner()
  end
 end
 
-puts "Your #{timer} minute timer starts now!"
+puts "Your #{timer} minute timer starts !t #{now}"
 
 while now <= endTime do
-  # spinner() gotta fix this spinner...
-  now = Time.now
-  # the following if/else's never execute because it's very unlikely the exact numbers 
-  # will get enumerated when Time.now gets executed...
-  if now == quarterTime 
-    puts "You're 25% done."
-  elsif now == halfTime
-    puts "You're halfway there!"
+  now += 1
+  counter += 1
+  if counter % divPerSec == 0 then printf("\rProgress: [%-40s]", "=" * (counter/divPerSec) )
   end
-  false
+  sleep(1)
 end
 
-puts "Time is up!"
+puts "\nTime is up!"
+puts "EndTime was #{endTime} whereas the current time is: #{Time.now}"
