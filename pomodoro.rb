@@ -15,6 +15,11 @@ class Numeric
   end
 end
 
+# this is kind of a mess... 
+# I'm refering to facsimilies of time (counter and timerCount) 
+# because I don't know how to properly divide or find percentage of time
+# will have to refine this code further,
+# if an odd number is chosen, ending percentage is 101%...
 puts now.strftime("Your #{timer} minute timer starts at %l:%M.")
 printf("Progress: [%-60s] 0%%","")
 while now <= endTime do
@@ -25,5 +30,5 @@ while now <= endTime do
   sleep(1)
 end
 
-puts "\nTime is up!"
+puts "\nTime is up!\a"
 puts "Time discrepancy was #{Time.now - endTime} seconds."
