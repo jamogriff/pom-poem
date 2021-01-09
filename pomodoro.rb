@@ -4,30 +4,26 @@ timer = gets.chomp.to_i
 
 now = Time.now
 timerCount = timer * 60 # multiplied by 60 sec/min
-divisions = 40
+divisions = 60 
 divPerSec = timerCount / divisions
 endTime = now + timerCount
 counter = 0
-def spinner()
- while true # this while true statement never gets switched off in the loop below
-  print("/")
-  print("\b")
-  print("|")
-  print("\b")
-  print("\\")
-  print("\b")
- end
+
+class Numeric
+  def percent_of(n)
+    self.to_f / n.to_f * 100.0
+  end
 end
 
-puts "Your #{timer} minute timer starts !t #{now}"
-
+puts now.strftime("Your #{timer} minute timer starts at %l:%M.")
+printf("Progress: [%-60s] 0%%","")
 while now <= endTime do
   now += 1
   counter += 1
-  if counter % divPerSec == 0 then printf("\rProgress: [%-40s]", "=" * (counter/divPerSec) )
+  if counter % divPerSec == 0 then printf("\rProgress: [%-60s] %d%%", "=" * (counter/divPerSec), counter.percent_of(timerCount))
   end
   sleep(1)
 end
 
 puts "\nTime is up!"
-puts "EndTime was #{endTime} whereas the current time is: #{Time.now}"
+puts "Time discrepancy was #{Time.now - endTime} seconds."
