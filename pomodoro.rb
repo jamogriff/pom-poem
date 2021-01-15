@@ -1,3 +1,9 @@
+=begin
+  ___                   _
+ | _ \___ _ __  ___  __| |___ _ _ ___
+ |  _/ _ \ '  \/ _ \/ _` / _ \ '_/ _ \
+ |_| \___/_|_|_\___/\__,_\___/_| \___/
+=end                               
 
 # This is a simple program to simulate a Pomodoro timer.
 # A Pomodoro timer is typically meant to sustain focused work for around 20 - 30 minutes.
