@@ -1,3 +1,3 @@
-require_relative 'user_class.rb'
+require_relative 'classes.rb'
 
 user = User.new
