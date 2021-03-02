@@ -1,23 +1,109 @@
 # classes used in this program
 module Validation
 
-  def format_date(string)
+  # THIS NEEDS TO BE REFACTORED
+  # Setting the actual user variables should be done in User::initialize, and
+  # should be set based on the actual array that is returned from the text file.
+  def write_config(config)
+    require 'fileutils' # used to interact with file directory
 
-    # this validation should be replaced
-    # FEATURE NEEDED
-    if(string.is_a? String)
-      string.split("/")
-      return string
-    else
-      puts "Error!"
-      return false
+    puts "Thanks for using Pom Poem! Let's set up some quick user preferences."
+    puts "Gracias por usar la Pom Poem! Primera haces tu configuración básica."
+
+    File.new(config, "w")
+    File.open(config)
+
+    # used to keep asking user questions if they don't enter info correctly
+    lang_check = false
+    name_check = false
+
+    while lang_check == false do
+      puts "Please type 'en' for English prompts or 'es' for Spanish."
+      puts "Por favor escribe 'en' para texto en ingles o 'es' en espanol."
+      print "> "
+
+      @language = gets.chomp
+
+      if(self.language == "en" || self.language == "es")
+        File.write(config, "language: #{language}", mode: "w")
+        lang_check = true
+      end
     end
+
+
+    while name_check == false do
+      if self.language == "es"
+        puts "Gracias! Por favor escribe su nombre para continuar."
+        print "> "
+        @name = gets.chomp
+
+        # the following check really isn't effective..
+        # ADD FEATURE
+        if(self.name.is_a? String)
+          File.write(config, "\nname: #{self.name}", mode: "a")
+          puts "Muchas gracias, #{self.name}."
+          name_check = true
+        end
+      else
+        puts "Thanks! Please input your first name to continue."
+        print "> "
+        @name = gets.chomp
+
+        # the following check really isn't effective..
+        # ADD FEATURE
+        if(self.name.is_a? String)
+          File.write(config, "\nname: #{self.name}", mode: "a")
+          puts "Nice to meet you, #{self.name}."
+          name_check = true
+        end
+      end
+    end
+
+  end
+
+
+  # this function reads config.txt line by line and checks whether language and
+  # name entries exist. Will only return data if both entries exist.
+  def verify_config(config)
+    lang = ""
+    name = ""
+    f = File.open(config, "r") # opens config file
+    # Entries in config file should be in the following format:
+    # Ex: 'language: en\n'
+
+    f.each_line do |line|
+      # these variables return the first index of specified string
+      lang_index = line =~ /language/ # regex search for language
+      name_index = line =~ /name/ # regex search for name
+
+      # if there's a match, then resulting data entry is captured
+      if (lang_index != nil)
+        lang = line[lang_index + 10..-2] # why + 10? Because 'language: ' is 10 chars
+        # why -2? Because there's a newline char at end.
+      elsif (name_index != nil)
+        name = line[name_index + 6..-1]
+      end
+
+    end
+    f.close
+
+    # if either lang or name weren't found, the config file is invalid and is deleted
+    # if both entries were found then returns their associated values
+    if lang.empty? || name.empty?
+      puts "Invalid config file found! Now deleting invalid file..."
+      File.delete(config)
+      puts "File deletion successful."
+    else
+      return lang, name
+    end
+
   end
 end
 
 
+
 class User
-  #include Validation
+  include Validation
   attr_accessor :name, :birthday, :language
 =begin
   def initialize(n, b, l)
@@ -37,7 +123,6 @@ class User
 =end
 
   def initialize
-    require 'fileutils' # used to interact with file directory
 
     puts "  ___  ___  __  __   ___  ___  ___ __  __ "
     puts ' | _ \/ _ \|  \/  | | _ \/ _ \| __|  \/  |'
@@ -47,97 +132,23 @@ class User
     print "\n"
     puts  "Checking for program configuration..."
 
-    if(!File.exist?('config.txt'))
-      puts "No record of current user exists!"
-      puts "No existe registro de persona!"
 
-      File.new("config.txt", "w")
-      File.open("config.txt")
+    config_file = "config.txt"
 
-      # used to keep asking user questions if they don't enter info correctly
-      lang_check = false
-      name_check = false
-      day_check = false
-
-      while lang_check == false do
-        puts "Please type 'en' for English prompts or 'es' for Spanish."
-        puts "Por favor escribe 'en' para texto en ingles o 'es' en espanol."
-        print "> "
-
-        @language = gets.chomp
-
-        if(self.language == "en" || self.language == "es")
-          File.write("config.txt", "language: #{language}", mode: "w")
-          lang_check = true
-        end
-      end
-
-
-      while name_check == false do
-        if self.language == "es"
-          puts "Gracias! Por favor escribe su nombre para continuar."
-          print "> "
-          @name = gets.chomp
-
-          # the following check really isn't effective..
-          # ADD FEATURE
-          if(self.name.is_a? String)
-            File.write("config.txt", "name: #{self.name}", mode: "a")
-            puts "Muchas gracias, #{self.name}."
-            name_check = true
-          end
-        else
-          puts "Thanks! Please input your first name to continue."
-          print "> "
-          @name = gets.chomp
-
-          # the following check really isn't effective..
-          # ADD FEATURE
-          if(self.name.is_a? String)
-            File.write("config.txt", "name: #{self.name}", mode: "a")
-            puts "Nice to meet you, #{self.name}."
-            name_check = true
-          end
-        end
-      end
-
-
-      while day_check == false do
-        if(self.language == "es")
-          puts "Por favor escribe su cumpleanos para continuar. Formato de ejemplo: 09/17/90"
-          puts "Estos datos solo se utilizan para una notificacion de feliz cumpleanos 🥳"
-          print "> "
-          @birthday = gets.chomp
-
-          # =begin
-          # This validation function is going to need some work...
-          # Found in Validation module
-          # if(format_date(self.birthday))
-          #   day_check == true
-          # end
-          # =end
-
-        else
-          puts "Please enter your birthday to continue. Example formatting: 09/17/90"
-          puts "This data is only used to wish you a happy birthday 🥳"
-          print "> "
-          @birthday = gets.chomp
-        end
-
-        File.write("config.txt", "birthday: #{self.birthday}", mode: "a")
-        day_check = true
-      end
-
-      # All config checks complete, now we welcome the user
-      welcome_user
-
-    else # aka config.txt exists
-      # scan doc for required parts, etc
-      # FUNCTION NEEDED
-      puts "We found a config file! ⚡️"
-      welcome_user
-
+    if(!File.exist?(config_file))
+      write_config(config_file)
+      config_data = verify_config(config_file)
+    elsif verify_config(config_file) == nil
+      write_config(config_file)
+      config_data = verify_config(config_file)
+    else
+      config_data = verify_config(config_file)
     end
+
+    puts "We found a valid config file! ⚡️"
+    puts "We have your data: #{config_data}."
+
+    # Set user variables here!
 
   end
 
