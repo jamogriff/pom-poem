@@ -1,4 +1,8 @@
-# Collection of Time Utility Programs
-This repo is a collection of some basic time utility programs. Currently the following features have been built out:
-- Pomodoro Timer
-- Countdown to Date
+# Pom Poem
+### Status: Actively being developed
+Pom Poem is a fully-featured command-line Pomodoro timer written in Ruby. Features in the final iteration will consist of:
+- [] Basic user configuration
+- [] Preferred language of English or Spanish prompts
+- [x] CLI Pomodoro Timer with progress bar
+- [] Gamify-ing completion of Pom's by utilizing [PoetryDB's API](https://poetrydb.org/index.html)
+- [] Record-keeping of unlocked poems
