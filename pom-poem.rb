@@ -1,9 +1,17 @@
+require_relative 'classes.rb'
+
+user = User.new
+language = user.get_language
+
+user.welcome_user
+
+
 =begin
   ___                   _
  | _ \___ _ __  ___  __| |___ _ _ ___
  |  _/ _ \ '  \/ _ \/ _` / _ \ '_/ _ \
  |_| \___/_|_|_\___/\__,_\___/_| \___/
-=end                               
+=end
 
 # This is a simple program to simulate a Pomodoro timer.
 # A Pomodoro timer is typically meant to sustain focused work for around 20 - 30 minutes.
@@ -13,7 +21,12 @@
 # I have added a time discrepancy output when the timer function is complete.
 # Although since this is a Pomodoro timer it doesn't matter that it's a couple seconds off.
 
-puts "Enter how many minutes you want to set your timer for: "
+if (language == 'es')
+  puts "Entras cuantos minutos quieres para tu Pomodoro: "
+else
+  puts "Enter how many minutes you want to set your Pomodoro for: "
+end
+print "> "
 timer = gets.chomp.to_i
 
 now = Time.now
@@ -38,7 +51,12 @@ end
 # Also, if an odd number is chosen, ending percentage is 101%...
 # likely due to rounding.
 
-puts now.strftime("Your #{timer} minute timer starts at %l:%M.")
+if (language == 'es')
+  puts now.strftime("Tu Pom de #{timer} minutos comienza en %l:%M.")
+else
+  puts now.strftime("Your #{timer} minute timer starts at %l:%M.")
+end
+
 printf("Progress: [%-60s] 0%%","")
 while now <= endTime do
   now += 1
@@ -54,5 +72,11 @@ while now <= endTime do
   sleep(1)
 end
 
-puts "\nTime is up!\a" # added \a for an audible beep
-puts "Program performed #{counter} operations and was #{Time.now - endTime} seconds off the exact ending time."
+if (language == 'es')
+  puts "\nEl tiempo ha terminado!\a"
+else
+  puts "\nTime is up!\a" # added \a for an audible beep
+  puts "Program performed #{counter} operations and was #{Time.now - endTime} seconds off the exact ending time."
+end
+
+user.choose_option
