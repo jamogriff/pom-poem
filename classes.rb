@@ -1,5 +1,12 @@
 # classes and modules used in this program
 
+ #  __  __         _      _
+ # |  \/  |___  __| |_  _| |___ ___
+ # | |\/| / _ \/ _` | || | / -_|_-<
+ # |_|  |_\___/\__,_|\_,_|_\___/__/
+ #
+
+
 module Validation
 
   # this function reads config.txt line by line and checks whether language and
@@ -41,6 +48,7 @@ module Validation
 end
 
 
+
 # straightforward percentage function
 module Math
   def percent_of(num, div)
@@ -59,9 +67,17 @@ module Math
   end
 end
 
+
+ #   ___ _
+ #  / __| |__ _ ______ ___ ___
+ # | (__| / _` (_-<_-</ -_|_-<
+ #  \___|_\__,_/__/__/\___/__/
+ #
+
 class User
   include Validation
   attr_accessor :name, :language
+
 
   def initialize
 
@@ -116,7 +132,6 @@ class User
       end
     end
 
-
     while name_check == false do
       if self.language == "es"
         puts "Gracias! Por favor escribe su nombre para continuar."
@@ -144,6 +159,7 @@ class User
     end
   end
 
+
   def welcome_user
     time = Time.now
 
@@ -156,6 +172,7 @@ class User
     end
 
   end
+
 
   def choose_option
     option_check = false
@@ -193,11 +210,13 @@ class User
     end
   end
 
+
   def get_language
     return self.language
   end
 
 end
+
 
 
 class Pomodoro
