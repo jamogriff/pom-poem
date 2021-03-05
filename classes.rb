@@ -41,19 +41,29 @@ module Validation
 end
 
 
+# straightforward percentage function
+module Math
+  def percent_of(num, div)
+    num.to_f / div.to_f * 100.0
+  end
+
+  def convert_to_seconds(minutes)
+    seconds = minutes * 60
+    return seconds
+  end
+
+  def convert_divpersec(minutes)
+    seconds = convert_to_seconds(minutes)
+    div_per_sec = seconds / 40
+    return div_per_sec
+  end
+end
+
 class User
   include Validation
   attr_accessor :name, :language
 
   def initialize
-
-    puts "  ___  ___  __  __   ___  ___  ___ __  __ "
-    puts ' | _ \/ _ \|  \/  | | _ \/ _ \| __|  \/  |'
-    puts ' |  _/ (_) | |\/| | |  _/ (_) | _|| |\/| |'
-    puts ' |_|  \___/|_|  |_| |_|  \___/|___|_|  |_|'
-    puts "  ~ Created by Jamison Griffith - 2021 ~  "
-    print "\n"
-
 
     config_file = "config.txt"
 
@@ -149,6 +159,7 @@ class User
 
   def choose_option
     option_check = false
+    print("\n")
 
     while option_check == false do
       if self.language == "es"
@@ -177,7 +188,7 @@ class User
 
       if (user_option == "1")
         option_check = true
-        puts "Okay, we'll work on that feature soon..."
+        Pomodoro.new(@language)
       end
     end
   end
@@ -190,18 +201,63 @@ end
 
 
 class Pomodoro
-  attr_accessor :timer, :now, :future
+  attr_accessor :timer, :now, :future, :language
+  include Math
 
-  def initialize
-    # Need to research how to access User class variables
+  def initialize(language)
+    @language = language
+
+    if (self.language == 'es')
+      puts "Entras cuantos minutos quieres para tu Pomodoro: "
+    else
+      puts "Enter how many minutes you want to set your Pomodoro for: "
+    end
+    print "> "
+
+    @minutes = gets.chomp.to_i
+    @now = Time.now
+    @future = self.now + convert_to_seconds(@minutes)
+
+    start_timer
+
   end
 
-end
+  def start_timer
+    if (self.language == 'es')
+      puts self.now.strftime("Tu Pom de #{@minutes} minutos comienza en %l:%M.")
+    else
+      puts self.now.strftime("Your #{@minutes} minute timer starts at %l:%M.")
+    end
 
+    counter = 0
+    # I'm refering to facsimilies of time (counter and timerCount)
+    # because I don't know how to properly divide or find percentage of time objects
+    # Likely could do more manipulations if convert Time objects .to_i
 
-# straightforward percentage function
-class Numeric
-  def percent_of(n)
-    self.to_f / n.to_f * 100.0
+    # Also, if an odd number is chosen, ending percentage is 101%...
+    # likely due to rounding.
+    printf("Progress: [%-60s] 0%%","")
+    while self.now <= self.future do
+      self.now += 1
+      counter += 1
+
+      # basically this progress bar will add another bar (up to 60) every division of "timer"
+      # print formatting performs a carriage return each time its written to create the illusion of movement
+      # percentage complete is also listed at the end
+      if counter % @minutes == 0 then printf("\rProgress: [%-60s] %d%%", "=" * (counter/@minutes), percent_of(counter, convert_to_seconds(@minutes)))
+      end
+      # I'm using this sleep function to essentially keep track of time passing, it's not terribly accurate
+      # although for the purposes of a Pomodoro timer it works fine (roughly 0.6% error)
+      sleep(1)
+    end
+
+    if (self.language == 'es')
+      puts "\nEl tiempo ha terminado!\a"
+    else
+      puts "\nTime is up!\a" # added \a for an audible beep
+      puts "Program performed #{counter} operations and was #{Time.now - @future} seconds off the exact ending time."
+    end
+
   end
+
 end
