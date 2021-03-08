@@ -1,4 +1,5 @@
-require_relative 'classes.rb'
+require_relative './classes/user.rb'
+require_relative './classes/pomodoro.rb'
 
 puts "  ___  ___  __  __   ___  ___  ___ __  __ "
 puts ' | _ \/ _ \|  \/  | | _ \/ _ \| __|  \/  |'
