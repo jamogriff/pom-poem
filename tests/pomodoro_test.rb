@@ -5,22 +5,26 @@ require_relative '../classes/modules.rb'
 class PomodoroTest < MiniTest::Test
   include Math
 
-  def test_time_offset
-    pom = Pomodoro.new('en')
-
-    start_time = pom.start.to_i
-    pom_time = convert_to_seconds(pom.minutes)
-    end_time = pom.future.to_i
-    acceptable_error_rate = pom_time * 0.01
-
-    # NEEDS FIXED
-    # this strategy of measuring actual run-time is flawed for some reason...
-    # keep getting 0.01 for some reason....
-    assert_in_delta acceptable_error_rate, (pom.run_time * 0.01), 0.5
+  def setup
+    @pom = Pomodoro.new('en')
   end
 
+  def test_time_offset
+
+    # acceptable_error_rate = 0.001 # error rate of 0.1%
+    baseline_time_drift = convert_to_seconds(@pom.timer_length)
+    actual_time_drift = @pom.program_length
+
+    puts "Baseline time drift: #{baseline_time_drift} seconds"
+    puts "Actual time drift: #{actual_time_drift} seconds"
+
+    # 5 seconds off the actual time is acceptable for the purposes of a Pom timer
+    assert_in_delta baseline_time_drift, actual_time_drift, 5.0
+  end
+
+  # Bug due to while loop encounters case where percentage can hit 101%
   # def test_ending_percentage
-  #   pom = Pomodoro.new('en')
-  #   assert_equal pom.minutes, pom.counter
+  #   assert_equal 100, @pom.end_percentage
   # end
+
 end

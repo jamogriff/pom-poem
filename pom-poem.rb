@@ -18,7 +18,7 @@ print "\n"
 
 
 user = User.new # checks for valid config.txt file, if not generates a new one
-language = user.get_language # getting language so Pomodoro class can use (more elegant way?)
+language = user.language # getting language so Pomodoro class can use (more elegant way?)
 
 user.welcome_user # welcomes user with their name and time in preferred language.
 

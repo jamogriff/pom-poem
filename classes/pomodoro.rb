@@ -1,11 +1,15 @@
+# This class handles the time-tracking functionality of Pom-Poem
+
 class Pomodoro
-  attr_accessor :minutes, :start, :future, :language, :run_time
+  attr_accessor :language, :timer_length, :start_time, :run_time, :program_length, :end_percentage
   require_relative 'modules.rb'
   include Math
 
+  # User language is only parameter that needs to be passed into a new Pomodoro class
   def initialize(language)
     @language = language
 
+    # User prompt
     if (self.language == 'es')
       puts "Entras cuantos minutos quieres para tu Pomodoro: "
     else
@@ -13,53 +17,57 @@ class Pomodoro
     end
     print "> "
 
-    @minutes = gets.chomp.to_i
-    @start = Time.now
-    @future = @start + convert_to_seconds(@minutes)
+    @timer_length = gets.chomp.to_i # I use 'to_i' method because it throws an error if user inputs a non-number
+    @start_time = Time.now # keeping this var static is important to track time drift
+    @run_time = @start_time # run_time is used as the variable that tracks time as the program runs
+    @end_time = @start_time + convert_to_seconds(@timer_length) # ex: adding 120 seconds to start time for 2 min timer
 
+    # The function below actual executes the timer. Details are in the method below.
     start_timer
-
   end
 
+
+  # This method starts the timer and displays an ongoing progress bar during runtime.
   def start_timer
-    if (self.language == 'es')
-      puts @start.strftime("Tu Pom de #{@minutes} minutos comienza en %l:%M.")
+    if (@language == 'es')
+      puts @start_time.strftime("Tu Pom de #{@timer_length} minutos comienza en %l:%M.")
     else
-      puts @start.strftime("Your #{@minutes} minute timer starts at %l:%M.")
+      puts @start_time.strftime("Your #{@timer_length} minute timer starts at %l:%M.")
     end
 
+    # initializing counter and progress bar output
     counter = 0
-    # I'm refering to facsimilies of time (counter and timerCount)
-    # because I don't know how to properly divide or find percentage of time objects
-    # Likely could do more manipulations if convert Time objects .to_i
+    printf("Progress: [%-60s] 0%%","") # this prints a string with 60 open spaces in-between brackets
 
-    # Also, if an odd number is chosen, ending percentage is 101%...
-    # likely due to rounding.
-    printf("Progress: [%-60s] 0%%","")
-    while @start <= self.future do
-      @start += 1
-      counter += 1
+    # The strategy for time-keeping below is meant to be fairly efficient in terms
+    # of lessening number of operation. The sleep method is used to keep track of time,
+    # instead of a Time object. Operations should be fairly close to the amount of seconds
+    # of timer_length as opposed to using Time.now in realtime to update tens of thousands of times.
+    while @run_time <= @end_time do
+      @run_time += 1 # increase runtime by 1 second
+      counter += 1 
 
-      # basically this progress bar will add another bar (up to 60) every division of "timer"
-      # print formatting performs a carriage return each time its written to create the illusion of movement
-      # percentage complete is also listed at the end
-      if counter % @minutes == 0 then printf("\rProgress: [%-60s] %d%%", "=" * (counter/@minutes), percent_of(counter, convert_to_seconds(@minutes)))
+      # This progress bar will update progress bar and percentage complete (up to 60 times) every division of timer_length.
+      # i.e. A 20 minute timer will update the progress bar every 20 seconds.
+      # Print formatting performs a carriage return each time its written to create the illusion of movement
+      if counter % @timer_length == 0 then printf("\rProgress: [%-60s] %d%%", "=" * (counter/@timer_length), approx_percent(counter, convert_to_seconds(@timer_length)))
       end
 
-      # To keeo the the program's ending time to less than 1.5% off of the actual ending time,
-      # we update the counter every 2 minutes to reconcile any time drift.
-      # if counter % 120 == 0 then @start = Time.now
-      # end
+      # There is a slight time drift in the program (see below)
+      # Updating run_time with actual time every 10 minutes allows time drift
+      # to stay within 5 seconds of actual time.
+      if counter % 600 == 0 then @run_time = Time.now
+      end
 
       # This program's time drift occurs because of the sleep function used below.
-      # I'm using this sleep function to essentially keep track of time passing,
-      # this allows the program to perform significantly less operations than using
-      # Time.now in realtime to update thousands of times.
-      sleep(1)
+      sleep(1) # sleep for 1 second
     end
 
-    @run_time = Time.now.to_i - @start.to_i
+    # These var's is used in testing to determine how accurate timer was
+    @program_length = Time.now - @start_time
+    @end_percentage = approx_percent(counter, convert_to_seconds(@timer_length))
 
+    # Output to user
     if (self.language == 'es')
       puts "\nEl tiempo ha terminado!\a"
     else

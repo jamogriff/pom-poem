@@ -40,10 +40,19 @@ module Validation
 end
 
 
-# straightforward percentage function
+# helper mathematical functions
 module Math
-  def percent_of(num, div)
-    num.to_f / div.to_f * 100.0
+
+  def approx_percent(num, div)
+    float = (num.to_f / div.to_f) * 100.0
+
+    # crude way to inhibit percent from hitting 101%
+    # if (float.round >= 101)
+    #   float = 100
+    # end
+
+    return float
+
   end
 
   def convert_to_seconds(minutes)
@@ -51,6 +60,7 @@ module Math
     return seconds
   end
 
+  # This function needs to be overhauled, but would allow a smaller progress bar.
   def convert_divpersec(minutes)
     seconds = convert_to_seconds(minutes)
     div_per_sec = seconds / 40

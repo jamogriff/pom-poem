@@ -135,9 +135,4 @@ class User
     end
   end
 
-
-  def get_language
-    return self.language
-  end
-
 end
