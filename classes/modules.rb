@@ -37,6 +37,32 @@ module Validation
     end
 
   end
+
+  # Used in Pomodoro class to verfiy whether a number or not
+  def get_number
+    num = gets.chomp.to_i # I use 'to_i' method because it throws an error if user inputs a non-number
+    #1 # static num used for streamlining testing
+  end
+
+  # used to simulate the ideal synchronized runtime of a timer
+  # Intakes template as the hash generated upon start of Pomodoro, and endpoint of timer
+  def create_control_hash(template, endpoint)
+
+    i = 0
+    run_time = template[i]
+    control_hash = {i => run_time}
+
+    while i <= endpoint do
+      control_hash[i] = run_time
+
+      i += 1
+      run_time += 1
+    end
+
+    return control_hash
+
+  end
+
 end
 
 
@@ -46,6 +72,7 @@ module Math
   def approx_percent(num, div)
     float = (num.to_f / div.to_f) * 100.0
 
+
     # crude way to inhibit percent from hitting 101%
     # if (float.round >= 101)
     #   float = 100
@@ -53,6 +80,11 @@ module Math
 
     return float
 
+  end
+
+  def sig_figs(float)
+    sig_figs = float.truncate(3)
+    return sig_figs
   end
 
   def convert_to_seconds(minutes)
@@ -67,17 +99,26 @@ module Math
     return div_per_sec
   end
 
-  def create_control_hash(i, runtime, length)
-    hash = {i => runtime}
 
-    while i <= length do
-      i += 1
-      runtime += 1
+  # Fun Fact: This algorithm is an ancient and super efficient way to find prime numbers.
+  def sieve_of_eratosthenes(max)
+    primes = (0..max).to_a
 
-      hash[i] = runtime
+    primes[0] = primes[1] = nil # getting 0 and 1 out of the way
+
+    primes.each do |p|
+      # skip item if nil
+      next unless p
+
+      break if p*p > max # break loop if a perfect square exceeds max value
+
+      # as we iterate through numbers, we square the value (e.g. 3*3)
+      # then skip through the array by the value of p (i.e. by multiples of p).
+      # Each multiple of p is assigned nil, and thus removed from the array.
+      (p*p).step(max,p) {|m| primes[m] = nil}
     end
-    return hash
-  end
 
+    primes.compact # compact method removes all of the nil entries
+  end
 
 end
