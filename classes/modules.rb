@@ -66,4 +66,18 @@ module Math
     div_per_sec = seconds / 40
     return div_per_sec
   end
+
+  def create_control_hash(i, runtime, length)
+    hash = {i => runtime}
+
+    while i <= length do
+      i += 1
+      runtime += 1
+
+      hash[i] = runtime
+    end
+    return hash
+  end
+
+
 end

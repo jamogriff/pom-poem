@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'minitest/pride'
 require_relative '../classes/pomodoro.rb'
 require_relative '../classes/modules.rb'
 
@@ -26,5 +27,21 @@ class PomodoroTest < MiniTest::Test
   # def test_ending_percentage
   #   assert_equal 100, @pom.end_percentage
   # end
+
+  def test_runtime_is_synced
+
+    new_pom = Pomodoro.new
+
+    # NEEDS ATTENTION
+    # control run time log runtime is about 100 off for some reason...
+    control_runtime_log = create_control_hash(0, new_pom.run_time.to_i, convert_to_seconds(new_pom.timer_length))
+
+    puts control_runtime_log
+    puts @pom.run_time_log
+
+    assert_equal control_runtime_log, @pom.run_time_log
+
+  end
+
 
 end

@@ -2,6 +2,7 @@
 
 class Pomodoro
   attr_accessor :language, :timer_length, :start_time, :run_time, :program_length, :end_percentage
+  attr_reader :run_time_log
   require_relative 'modules.rb'
   include Math
 
@@ -35,8 +36,13 @@ class Pomodoro
       puts @start_time.strftime("Your #{@timer_length} minute timer starts at %l:%M.")
     end
 
-    # initializing counter and progress bar output
+    # Initializing counter. Even though there are int properties of @run_time, a strict int counter
+    # is extremely useful to make comparisons and enable progress bar and percentage.
     counter = 0
+    # This hash is used to track whether run_time and counter stay synced throughout runtime.
+    @run_time_log = {counter => @run_time.to_i}
+
+
     printf("Progress: [%-60s] 0%%","") # this prints a string with 60 open spaces in-between brackets
 
     # The strategy for time-keeping below is meant to be fairly efficient in terms
@@ -45,7 +51,12 @@ class Pomodoro
     # of timer_length as opposed to using Time.now in realtime to update tens of thousands of times.
     while @run_time <= @end_time do
       @run_time += 1 # increase runtime by 1 second
-      counter += 1 
+      counter += 1
+
+      # ATTENTION: This is only used for testing counter and run_time syncing.
+      # Please remove before using, otherwise it creates a large hash for no reason
+      @run_time_log[counter] = @run_time.to_i
+
 
       # This progress bar will update progress bar and percentage complete (up to 60 times) every division of timer_length.
       # i.e. A 20 minute timer will update the progress bar every 20 seconds.
