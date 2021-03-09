@@ -35,7 +35,7 @@ class User
     require 'fileutils' # used to interact with file directory
 
     puts "Thanks for using Pom Poem! Let's set up some quick user preferences."
-    puts "Gracias por usar la Pom Poem! Primera haces tu configuración básica."
+    puts "Gracias por usar la Pom Poem! Primera haces tu configuración básica.\n"
 
     File.new(config, "w")
     File.open(config)
@@ -73,6 +73,7 @@ class User
         puts "Thanks! Please input your first name to continue."
         print "> "
         @name = gets.chomp
+        print "\n"
 
         # the following check really isn't effective..
         # ADD FEATURE
@@ -91,9 +92,11 @@ class User
     if self.language == "es"
       puts "Bienvenidos a Pom Poem, #{self.name}."
       puts time.strftime("Hoy es %l:%M %p on %A, %B %-d, %Y")
+      print "\n"
     else
       puts "Welcome to Pom Poem, #{self.name}."
       puts time.strftime("Today is %l:%M %p on %A, %B %-d, %Y")
+      print "\n"
     end
 
   end

@@ -4,6 +4,7 @@ class Pomodoro
   attr_accessor :language, :timer_length, :start_time, :run_time, :program_length
   attr_reader :run_time_log, :end_percentage, :end_time
   require_relative 'modules.rb'
+  require_relative 'poem.rb'
   include Math
   include Validation
 
@@ -19,22 +20,23 @@ class Pomodoro
     end
     print "> "
 
-    @timer_length = get_number # method lives in Validation class
+    @timer_length = get_number # method lives in Validation module
 
     # The function below actual executes the timer. Details are in the method below.
+    # MOTIVATIONAL RANDOM QUOTE
+    # This part of the code generates a random quote for the user to ponder before timer starts
+    upper_bound = 1000
+    random = rand(upper_bound) # generate a random number up to upper_bound
+    primes = sieve_of_eratosthenes(upper_bound) # create array of all prime numbers up to upper_bound
+    count_down(@language, random, primes)
+
+    # BEGIN TIMER
     start_timer
   end
 
 
   # This method starts the timer and displays an ongoing progress bar during runtime.
   def start_timer
-
-    # MOTIVATIONAL RANDOM QUOTE
-    # This part of the code generates a random quote to go along with the countdown
-    upper_bound = 1000
-    random = rand(upper_bound) # generate a random number up to upper_bound
-    primes = sieve_of_eratosthenes(upper_bound) # create array of all prime numbers up to upper_bound
-    count_down(@language, random, primes)
 
     @start_time = Time.now # keeping this var static is important to track time drift
     @run_time = @start_time # run_time is used as the variable that tracks time as the program runs
@@ -54,11 +56,13 @@ class Pomodoro
     # of timer_length as opposed to using Time.now in realtime to update tens of thousands of times.
     while @run_time <= @end_time do
       counter += 1
+      @end_percentage = approx_percent(counter, convert_to_seconds(@timer_length)).round
+
       # This progress bar will update progress bar and percentage complete (up to 60 times) every division of timer_length.
       # i.e. A 20 minute timer will update the progress bar every 20 seconds.
       # Print formatting performs a carriage return each time its written to create the illusion of movement
       if (counter % @timer_length == 0)
-        printf("\rProgress: [%-60s] %d%%", "=" * (counter/@timer_length), approx_percent(counter, convert_to_seconds(@timer_length)))
+        printf("\rProgress: [%-60s] %d%%", "=" * (counter/@timer_length), @end_percentage)
         @run_time = Time.now
       end
 
@@ -80,14 +84,16 @@ class Pomodoro
 
     # These var's is used in testing to determine how accurate timer was
     @program_length = Time.now - @start_time
-    @end_percentage = approx_percent(counter, convert_to_seconds(@timer_length)).round
 
     # Output to user
     if (self.language == 'es')
-      puts "\nEl tiempo ha terminado!\a"
+      puts "\nEl tiempo ha terminado!\a\n"
     else
-      puts "\nTime is up!\a" # added \a for an audible beep
+      puts "\nTime is up!\a\n" # added \a for an audible beep
     end
+
+    # displays random poem at end of pomodoro
+    Poem.new
 
   end
 
@@ -107,7 +113,7 @@ class Pomodoro
       end
 
       print "\n"
-      countdown = 4
+      countdown = 3
       while countdown > 0 do
         print "\r#{@timer_length} minute Pom start: #{countdown}"
         countdown -= 1
@@ -131,7 +137,7 @@ class Pomodoro
       end
 
       print "\n"
-      countdown = 4
+      countdown = 3
       while countdown > 0 do
         print "\r#{@timer_length} minute Pom start: #{countdown} "
         countdown -= 1
@@ -142,6 +148,7 @@ class Pomodoro
       sleep(1)
 
     end
+
 
   end
 

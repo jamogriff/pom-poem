@@ -1,5 +1,6 @@
 require_relative './classes/user.rb'
 require_relative './classes/pomodoro.rb'
+require_relative './classes/poem.rb'
 
 puts "  ___  ___  __  __   ___  ___  ___ __  __ "
 puts ' | _ \/ _ \|  \/  | | _ \/ _ \| __|  \/  |'
@@ -21,7 +22,6 @@ user = User.new # checks for valid config.txt file, if not generates a new one
 language = user.language # getting language so Pomodoro class can use (more elegant way?)
 
 user.welcome_user # welcomes user with their name and time in preferred language.
-
 
 # A Pomodoro timer is typically meant to sustain focused work for around 20 - 30 minutes.
 # NOTE: the Terminal window has to be a roomy 76 columns wide for the progress bar to output correctly.
