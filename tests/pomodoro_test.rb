@@ -6,13 +6,14 @@ require_relative '../classes/modules.rb'
 class PomodoroTest < MiniTest::Test
   include Math
   include Validation
-  attr_accessor :pom
+  attr_accessor :pom, :primes
 
   def setup
     @pom = Pomodoro.new('en')
+    @primes = sieve_of_eratosthenes(1000)
   end
 
-  # parallelize_me!()
+  parallelize_me!()
 
   def test_time_offset
 
@@ -34,6 +35,36 @@ class PomodoroTest < MiniTest::Test
   # Bug due to while loop encounters case where percentage can hit 101%
   def test_ending_percentage
     assert_equal 100, @pom.end_percentage
+  end
+
+  def test_cyan_branch
+    if @primes.include?(@pom.seed)
+      assert_equal "cyan", @pom.branch
+    end
+  end
+
+  def test_magenta_branch
+    unless @primes.include?(@pom.seed)
+      if @pom.seed < 300
+        assert_equal "magenta", @pom.branch
+      end
+    end
+  end
+
+  def test_yellow_branch
+    unless @primes.include?(@pom.seed)
+      if @pom.seed > 600
+        assert_equal "yellow", @pom.branch
+      end
+    end
+  end
+
+  def test_black_branch
+    unless @primes.include?(@pom.seed)
+      if @pom.seed >= 300 && @pom.seed <= 600
+        assert_equal "black", @pom.branch
+      end
+    end
   end
 
 

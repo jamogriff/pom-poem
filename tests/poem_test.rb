@@ -5,10 +5,11 @@ require_relative '../classes/poem.rb'
 class PoemTest < MiniTest::Test
 attr_accessor :poem
 
-  parallelize_me!()
+  #parallelize_me!()
 
   def setup
-    @poem = Poem.new
+    cyan = "cyan"
+    @poem = Poem.new(cyan)
   end
 
   def test_successful_api_connection
@@ -41,6 +42,26 @@ attr_accessor :poem
     linecount = @poem.poem_hash['linecount'].to_i
 
     assert_equal Integer, linecount.class
+  end
+
+  def test_cyan_branch_mapping_to_number
+    short_poem = Poem.new("cyan")
+    assert_includes [2, 3, 4, 5, 6, 7], short_poem.line_count
+  end
+
+  def test_magenta_branch_mapping_to_number
+    short_poem = Poem.new("magenta")
+    assert_includes [8, 9, 10, 11, 12, 13], short_poem.line_count
+  end
+
+  def test_yellow_branch_mapping_to_number
+    short_poem = Poem.new("yellow")
+    assert_includes [14, 15, 16, 17, 18, 19], short_poem.line_count
+  end
+
+  def test_black_branch_mapping_to_number
+    short_poem = Poem.new("black")
+    assert_includes [20, 21, 22, 23, 24, 25], short_poem.line_count
   end
 
 

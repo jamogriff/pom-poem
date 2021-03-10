@@ -2,7 +2,7 @@
 
 class Pomodoro
   attr_accessor :language, :timer_length, :start_time, :run_time, :program_length
-  attr_reader :run_time_log, :end_percentage, :end_time
+  attr_reader :run_time_log, :end_percentage, :end_time, :seed, :branch
   require_relative 'modules.rb'
   require_relative 'poem.rb'
   include Math
@@ -22,15 +22,19 @@ class Pomodoro
 
     @timer_length = get_number # method lives in Validation module
 
-    # The function below actual executes the timer. Details are in the method below.
-    # MOTIVATIONAL RANDOM QUOTE
-    # This part of the code generates a random quote for the user to ponder before timer starts
+    # CREATE RANDOM BRANCH
+    # This part of the code generates a random seed which determines what branch gets
+    # executed after the Pom finishes. This ensures more variety of poems being displayed.
+    # A random quote is also displayed for the user to ponder before Pom starts
     upper_bound = 1000
-    random = rand(upper_bound) # generate a random number up to upper_bound
+    @seed = rand(upper_bound) # generate a random number up to upper_bound
     primes = sieve_of_eratosthenes(upper_bound) # create array of all prime numbers up to upper_bound
-    count_down(@language, random, primes)
+    determine_branch(@language, @seed, primes) # @branch is set in this method below
+
+    count_down # simple countdown until start of Pom
 
     # BEGIN TIMER
+    # The function below executes the timer. Details are in the method below.
     start_timer
   end
 
@@ -92,65 +96,60 @@ class Pomodoro
       puts "\nTime is up!\a\n" # added \a for an audible beep
     end
 
-    # displays random poem at end of pomodoro
-    Poem.new
+
+    # Note that branch is passed into a new poem instance.
+    # This determines the length of the random poem selected and subsequently
+    # shown to the user. 
+    Poem.new(@branch)
 
   end
 
-  def count_down(lang, seed, primes)
+  def determine_branch(lang, seed, primes)
     if lang == 'es'
-
 
       # a basic function that adds some randomness to the output
       if primes.include?(seed)
         print "🤘Sigan disfrutando"
+        @branch = "cyan"
       elsif seed < 300
-        print "Cierras los ojos y te concentras" # Bob Marley quote
+        print "Cierras los ojos y te concentras"
+        @branch = "magenta"
       elsif seed > 600
-        print "Tomas un respiro y lo sueltas lentamente" # Papa Roach quote
+        print "Tomas un respiro y lo sueltas lentamente"
+        @branch = "yellow"
       else
         print "Imaginas tu meta"
+        @branch = "black"
       end
-
-      print "\n"
-      countdown = 3
-      while countdown > 0 do
-        print "\r#{@timer_length} minute Pom start: #{countdown}"
-        countdown -= 1
-        sleep(1)
-      end
-
-      print "¡Vamos!"
-      sleep(2)
 
     else
-
       # a basic function that adds some randomness to the output
       if primes.include?(seed)
         print "Keep on rocking in the free world.\n" # Neil Young
+        @branch = "cyan"
       elsif seed < 300
-        print "Big things have small beginnings.\n"
+        print "All great things had small beginnings.\n" # Englewood Mural
+        @branch = "magenta"
       elsif seed > 600
         print "The journey of a thousand miles begins with one step.\n" # Lao Tzu
+        @branch = "yellow"
       else
         print "Success is the sum of small efforts, repeated day in day out.\n" # Robert Collier
+        @branch = "black"
       end
-
-      print "\n"
-      countdown = 3
-      while countdown > 0 do
-        print "\r#{@timer_length} minute Pom start: #{countdown} "
-        countdown -= 1
-        sleep(2)
-      end
-
-      print "Go!"
-      sleep(1)
 
     end
 
-
   end
 
+  def count_down
+    print "\n"
+    countdown = 5
+    while countdown > 0 do
+      print "\r#{@timer_length} minute Pom start: #{countdown}"
+      countdown -= 1
+      sleep(1)
+    end
+  end
 
 end

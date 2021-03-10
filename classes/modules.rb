@@ -41,7 +41,7 @@ module Validation
   # Used in Pomodoro class to verfiy whether a number or not
   def get_number
     num = gets.chomp.to_i # I use 'to_i' method because it throws an error if user inputs a non-number
-    #1 # static num used for streamlining testing
+    # 1 # static num used for streamlining testing
   end
 
   # used to simulate the ideal synchronized runtime of a timer
