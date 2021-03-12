@@ -4,6 +4,6 @@ Pom Poem is a fully-featured command-line Pomodoro timer written in Ruby. Featur
 - [x] Basic user configuration
 - [x] Preferred language of English or Spanish prompts
 - [x] CLI Pomodoro Timer with progress bar
-- [ ] Add relevant tests
-- [ ] Gamify-ing completion of Pom's by utilizing [PoetryDB's API](https://poetrydb.org/index.html)
+- [x] Add relevant tests
+- [x] Gamify-ing completion of Pom's by utilizing [PoetryDB's API](https://poetrydb.org/index.html)
 - [ ] Record-keeping of unlocked poems
