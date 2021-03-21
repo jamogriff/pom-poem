@@ -50,7 +50,7 @@ class Poem
     line_number = @poem_hash['linecount'].to_i
     poem_lines = @poem_hash['lines'] # should be coming in as array
 
-    puts "#{@poem_hash["title"]} by #{@poem_hash["author"]}\n"
+    puts "\n#{@poem_hash["title"]} by #{@poem_hash["author"]}\n"
     22.times do print "-" end
     print "\n"
 
